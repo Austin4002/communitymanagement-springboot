@@ -1,13 +1,18 @@
 package com.gyy.boot.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gyy.boot.bean.Clazz;
 import com.gyy.boot.bean.Role;
 import com.gyy.boot.bean.User;
+import com.gyy.boot.bean.UserRole;
 import com.gyy.boot.service.ClazzService;
+import com.gyy.boot.service.UserRoleService;
 import com.gyy.boot.service.UserService;
 import com.gyy.boot.utils.CommonUtils;
+import com.gyy.boot.utils.IdUtils;
 import com.gyy.boot.utils.TokenUtil;
+import com.gyy.boot.vo.ChangeRoleVo;
 import com.gyy.boot.vo.Result;
 import com.gyy.boot.vo.UserInformation;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,9 @@ public class UserController {
 
     @Autowired
     private CommonUtils commonUtils;
+
+    @Autowired
+    private UserRoleService userRoleService;
 
     /**
      * 用户登录
@@ -100,6 +108,30 @@ public class UserController {
             userInformation.setRole(roleList);
             rs.setData(userInformation);
         }
+        return rs;
+    }
+
+    @PostMapping("/changeRole")
+    public Result changeRoleByNo(@RequestBody ChangeRoleVo changeRoleVo){
+        Result rs = new Result<>(500, "error");
+
+        if (changeRoleVo.getRoleIds().size()<1){
+            rs.setCode(502);
+            rs.setMsg("用户至少拥有一个角色");
+            return rs;
+        }else {
+            QueryWrapper<UserRole> deleteWrapper = new QueryWrapper<>();
+            deleteWrapper.eq("user_no",changeRoleVo.getNo());
+            boolean b = userRoleService.remove(deleteWrapper);
+            if (b){
+                changeRoleVo.getRoleIds().forEach(v->{
+                    userRoleService.save(new UserRole(IdUtils.getUUID(), changeRoleVo.getNo(), v));
+                });
+                rs.setMsg("ok");
+                rs.setCode(200);
+            }
+        }
+
         return rs;
     }
 

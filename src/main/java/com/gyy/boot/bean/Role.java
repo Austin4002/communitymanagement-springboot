@@ -10,5 +10,7 @@ public class Role {
     private String name;
     //描述
     private String description;
+    //前端展示颜色需要
+    private String type;
 
 }

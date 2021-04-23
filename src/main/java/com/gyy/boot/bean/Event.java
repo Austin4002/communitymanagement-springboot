@@ -8,8 +8,6 @@ import java.util.Date;
 public class Event {
     //活动id
     private String id;
-    //社团id
-    private String clubId;
     //活动名称
     private String name;
     //活动地点
@@ -19,9 +17,11 @@ public class Event {
     //活动2级类型
     private String type2;
     //活动开始时间
-    private Date startTime;
+    private String startTime;
     //活动结束时间
-    private Date endTime;
+    private String endTime;
+    //管理员审核状态（0拒绝 1通过 2待审核）
+    private Integer status;
     //签到表id
     private String signInId;
 
