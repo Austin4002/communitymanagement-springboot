@@ -11,6 +11,7 @@ public class UserInformation {
     private String no;
     private String name;
     private String password;
+    private String phone;
     private List<Role> role;
     private String token;
     private String clazz;

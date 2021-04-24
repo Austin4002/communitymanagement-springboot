@@ -75,6 +75,7 @@ public class ClubController {
     @PutMapping("/club")
     public Result updateClubById(@RequestBody Club club) {
         Result rs = new Result<>(500, "error");
+        //todo 社长怎么指定？
         boolean flag = clubService.updateById(club);
         if (flag) {
             rs.setCode(200);
@@ -134,6 +135,23 @@ public class ClubController {
         rs.setCode(200);
         rs.setMsg("ok");
         rs.setData(userPage);
+        return rs;
+    }
+
+    @GetMapping("/getClubByProprieter/{proprieterId}")
+    public Result getClubByProprieter(@PathVariable("proprieterId") String proprieterId) {
+        Result rs = new Result<>(500, "error");
+
+        QueryWrapper<Club> wrapper = new QueryWrapper<>();
+        wrapper.eq("proprieter_id", proprieterId);
+        Club club = clubService.getOne(wrapper);
+        if (club != null) {
+            rs.setData(club);
+            rs.setCode(200);
+            rs.setMsg("ok");
+        }
+
+
         return rs;
     }
 }

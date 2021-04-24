@@ -20,7 +20,7 @@ public class Event {
     private String startTime;
     //活动结束时间
     private String endTime;
-    //管理员审核状态（0拒绝 1通过 2待审核）
+    //管理员审核状态（0拒绝 1通过 2待审核 3组队中）
     private Integer status;
     //签到表id
     private String signInId;

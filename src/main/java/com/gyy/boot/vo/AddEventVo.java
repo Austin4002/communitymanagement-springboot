@@ -19,6 +19,7 @@ public class AddEventVo {
     //活动开始时间
     private List<String> startAndEndTime;
     private List<String> clubIds;
+    private String clubId;
 
 
 }

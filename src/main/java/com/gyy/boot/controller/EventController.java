@@ -25,7 +25,7 @@ public class EventController {
     @Autowired
     private ClubEventService clubEventService;
 
-    @PostMapping("/addEvent")
+    @PostMapping("/adminAddEvent")
     public Result adminAddEvent(@RequestBody AddEventVo eventVo) {
         Result rs = new Result<>(500, "error");
         Event event = new Event();
@@ -66,7 +66,37 @@ public class EventController {
         }
 
 
+        return rs;
+    }
 
+    /**
+     * 社长添加活动
+     *
+     * @param eventVo
+     * @return
+     */
+    @PostMapping("/proprieterAddEvent")
+    public Result proprieterAddEvent(@RequestBody AddEventVo eventVo) {
+        Result rs = new Result<>(500, "error");
+        Event event = new Event();
+        BeanUtils.copyProperties(eventVo, event);
+
+        String eventId = IdUtils.getUUID();
+        event.setId(eventId);
+        String startTime = eventVo.getStartAndEndTime().get(0);
+        String endTime = eventVo.getStartAndEndTime().get(1);
+
+        event.setStartTime(startTime);
+        event.setEndTime(endTime);
+        //设为3，活动为组队中
+        event.setStatus(3);
+        boolean save = eventService.save(event);
+        if (save) {
+            ClubEvent clubEvent = new ClubEvent(IdUtils.getUUID(), eventVo.getClubId(), eventId);
+            clubEventService.save(clubEvent);
+            rs.setMsg("ok");
+            rs.setCode(200);
+        }
         return rs;
     }
 
