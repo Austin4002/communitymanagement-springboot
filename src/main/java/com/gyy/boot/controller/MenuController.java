@@ -59,7 +59,7 @@ public class MenuController {
                 };
                 Menu[] menu2_1 = new Menu[] {
                         new Menu("/home/proprieter/clubManagement/clubUserList", "社团成员", "el-icon-menu"),
-                        new Menu("/home/proprieter/clubManagement/notice", "公告管理", "el-icon-menu"),
+//                        new Menu("/home/proprieter/clubManagement/notice", "公告管理", "el-icon-menu"),
                         new Menu("/home/proprieter/clubManagement/clubApplication", "申请入社审核", "el-icon-menu")
                 };
 

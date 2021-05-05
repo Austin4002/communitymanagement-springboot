@@ -52,9 +52,9 @@ public class ClubController {
         ClubInfo clubInfo = new ClubInfo();
         BeanUtils.copyProperties(club, clubInfo);
         String proprieterId = club.getProprieterId();
-        if (proprieterId != null) {
+        if (proprieterId != null && !proprieterId.equals("")) {
             User user = userService.getById(proprieterId);
-            //todo 这里有bug，会报空指针
+
             clubInfo.setProprieterNo(user.getNo());
             clubInfo.setProprieterName(user.getName());
         } else {
