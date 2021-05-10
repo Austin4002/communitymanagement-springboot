@@ -19,9 +19,9 @@ public class ClazzController {
      * @return
      */
     @GetMapping("/classList")
-    public Result<Page<Clazz>> getClazzList(){
+    public Result<Page<Clazz>> getClazzList(@RequestParam("current") Integer current,@RequestParam("size") Integer size){
         Result<Page<Clazz>> rs = new Result<>(500, "error");
-        Page<Clazz> page = new Page<>();
+        Page<Clazz> page = new Page<>(current,size);
         Page<Clazz> clazzPage = clazzService.page(page);
         if (clazzPage.getSize() >= 0){
             rs.setCode(200);

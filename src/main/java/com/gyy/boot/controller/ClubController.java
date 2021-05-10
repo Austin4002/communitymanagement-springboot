@@ -35,7 +35,9 @@ public class ClubController {
     public Result<Page<Club>> getClubList(@RequestParam("current") Integer current, @RequestParam("size") Integer size) {
         Result<Page<Club>> rs = new Result<>(500, "error");
         Page<Club> page = new Page<>(current, size);
-        Page<Club> clubPage = clubService.page(page);
+        QueryWrapper<Club> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("star_level");
+        Page<Club> clubPage = clubService.page(page,wrapper);
         if (clubPage.getSize() >= 0) {
             rs.setCode(200);
             rs.setMsg("ok");
@@ -120,7 +122,7 @@ public class ClubController {
         QueryWrapper<ClubUser> wrapper = new QueryWrapper<>();
         wrapper.eq("club_id", clubId);
         Page page = new Page<>(current, size);
-        Page userPage = clubUserService.page(page);
+        Page userPage = clubUserService.page(page,wrapper);
         List<ClubUser> clubUserList = userPage.getRecords();
 
         List<User> userList = new ArrayList<>();
@@ -154,4 +156,46 @@ public class ClubController {
 
         return rs;
     }
+
+
+    @PostMapping("/studentJoinClub")
+    public Result studentJoinClub(@RequestBody ClubUser clubUser) {
+        Result rs = new Result<>(500, "error");
+        QueryWrapper<ClubUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",clubUser.getUserId());
+        queryWrapper.eq("club_id",clubUser.getClubId());
+        List<ClubUser> clubUserList = clubUserService.list(queryWrapper);
+        if (clubUserList.size()>0){
+            rs.setCode(503);
+            rs.setMsg("你已经加入该社团了，请不要重复加入");
+        }else {
+            clubUser.setId(IdUtils.getUUID());
+            boolean flag = clubUserService.save(clubUser);
+            if (flag) {
+                rs.setMsg("ok");
+                rs.setCode(200);
+            }
+        }
+
+        return rs;
+    }
+
+
+
+
+    /**
+     * 计算每个社团的星级
+     * @return
+     */
+    @GetMapping("/calculateStar")
+    public Result calculateStar() {
+        Result rs = new Result<>(500, "error");
+
+
+
+
+        return rs;
+    }
+
+
 }

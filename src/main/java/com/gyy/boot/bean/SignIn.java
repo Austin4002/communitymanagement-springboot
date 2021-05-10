@@ -10,5 +10,7 @@ public class SignIn {
     private String userNo;
     //姓名
     private String userName;
+    //活动id
+    private String eventId;
 
 }
