@@ -21,7 +21,7 @@ public class MenuController {
 
                 Menu[] menu2_1 = new Menu[] {
                         new Menu("/home/permission/roleList", "角色列表", "el-icon-menu"),
-//                        new Menu("/home/permission/behavior", "行为日志", "el-icon-menu")
+                        new Menu("/home/permission/behavior", "行为日志", "el-icon-menu")
                 };
                 Menu[] menu2_2 = new Menu[] {
                         new Menu("/home/userManagement/list", "用户列表", "el-icon-menu"),
