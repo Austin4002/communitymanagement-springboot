@@ -9,8 +9,13 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+#    format:
+#      date-time: yyyy-MM-dd HH:mm:ss
   main:
     banner-mode: off
+#  jackson:
+#    date-format: yyyy-MM-dd HH:mm:ss
+#    time-zone: GMT+8
 
 server:
   servlet:

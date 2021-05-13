@@ -1,14 +1,15 @@
-package com.gyy.boot.bean;
+package com.gyy.boot.vo;
 
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class Finance {
+public class FinanceVo {
+
     private String id;
-    //社团id
-    private String clubId;
+    //社团名称
+    private String name;
     //用途
     private String purpose;
     //金额
@@ -19,6 +20,4 @@ public class Finance {
     private Integer status;
     //数据更新时间
     private Date updateTime;
-
-
 }

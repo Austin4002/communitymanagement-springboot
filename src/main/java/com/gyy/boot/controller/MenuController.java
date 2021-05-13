@@ -36,8 +36,8 @@ public class MenuController {
                         new Menu("/home/clubManagement/clubStarSet", "社团评分规则制定", "el-icon-menu")
                 };
                 Menu[] menu2_5= new Menu[] {
-                        new Menu("/home/moneyManagement/in", "入账管理", "el-icon-menu"),
-                        new Menu("/home/moneyManagement/out", "出账管理", "el-icon-menu")
+                        new Menu("/home/financeManagement/in", "入账管理", "el-icon-menu"),
+                        new Menu("/home/financeManagement/out", "出账管理", "el-icon-menu")
                 };
                 // 一级菜单
                 Menu[] menu = new Menu[] {
@@ -45,7 +45,7 @@ public class MenuController {
                         new Menu("/home/userManagement", "用户管理", "el-icon-user-solid", menu2_2),
                         new Menu("/home/eventManagement", "活动管理", "el-icon-user-solid", menu2_3),
                         new Menu("/home/clubManagement", "社团管理", "el-icon-user-solid", menu2_4),
-                        new Menu("/home/moneyManagement", "经费管理", "el-icon-user-solid", menu2_5),
+                        new Menu("/home/financeManagement", "经费管理", "el-icon-user-solid", menu2_5),
                 };
                 rs.setData(menu);
             } else if (role.equals("user")){ //普通学生
@@ -69,18 +69,22 @@ public class MenuController {
                 Menu[] menu2_1 = new Menu[] {
                         new Menu("/home/proprieter/clubManagement/clubUserList", "社团成员", "el-icon-menu"),
 //                        new Menu("/home/proprieter/clubManagement/notice", "公告管理", "el-icon-menu"),
-                        new Menu("/home/proprieter/clubManagement/clubApplication", "申请入社审核", "el-icon-menu")
+//                        new Menu("/home/proprieter/clubManagement/clubApplication", "申请入社审核", "el-icon-menu")
                 };
 
                 Menu[] menu3_1 = new Menu[] {
                         new Menu("/home/proprieter/eventManagement/newEvent", "活动创建", "el-icon-menu"),
                         new Menu("/home/proprieter/eventManagement/eventList", "活动列表", "el-icon-menu"),
                 };
+                Menu[] menu4_1 = new Menu[]{
+                        new Menu("/home/proprieter/moneyManagement/financeApply", "经费申请", "el-icon-menu"),
+                        new Menu("/home/proprieter/moneyManagement/financeList", "经费记录", "el-icon-menu")
+                };
                 Menu[] menu = new Menu[] {
                         new Menu("/home/proprieter/personal", "个人中心", "el-icon-user-solid",menu1_1),
                         new Menu("/home/proprieter/clubManagement", "社团管理", "el-icon-user-solid",menu2_1),
                         new Menu("/home/proprieter/eventManagement", "活动管理", "el-icon-user-solid",menu3_1),
-                        new Menu("/home/proprieter/moneyManagement", "经费管理", "el-icon-user-solid")
+                        new Menu("/home/proprieter/financeManagement", "经费管理", "el-icon-user-solid",menu4_1)
                 };
                 rs.setData(menu);
             }
