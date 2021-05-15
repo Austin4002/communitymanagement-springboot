@@ -276,6 +276,8 @@ public class ClubController {
             newClub.setStarLevel(star);
             clubService.updateById(newClub);
         }
+        rs.setCode(200);
+        rs.setData("ok");
 
 
         return rs;
