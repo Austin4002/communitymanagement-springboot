@@ -42,7 +42,7 @@ public class FinanceController {
 
         for (Finance finance : financeList) {
             FinanceVo financeVo = new FinanceVo();
-            BeanUtils.copyProperties(finance,financeVo);
+            BeanUtils.copyProperties(finance, financeVo);
             Club club = clubService.getById(finance.getClubId());
             financeVo.setName(club.getName());
             arrayList.add(financeVo);
@@ -86,10 +86,12 @@ public class FinanceController {
         if (club != null && club.getFinanceStartTime() != null && club.getPeriod() != null) {
             Date financeStartTime = club.getFinanceStartTime();
             String period = club.getPeriod();
-
+            //获取当前时间
+            Date now = new Date();
             //获取免申请周期时间
             Calendar cal = Calendar.getInstance();
             cal.setTime(financeStartTime);
+
             if (period.equals("一周")) {
                 cal.add(Calendar.DAY_OF_WEEK, 1);
             } else if (period.equals("一个月")) {
@@ -100,48 +102,69 @@ public class FinanceController {
                 cal.add(Calendar.YEAR, 1);
             }
             Date endTime = cal.getTime();
-            //判断当前社团从申请周期开始之后的所有的金额是否超过了免申请金额
-            QueryWrapper<Finance> financeWrapper = new QueryWrapper<>();
-            financeWrapper.eq("club_id", club.getId());
-            financeWrapper.ge("update_time", financeStartTime);
-            financeWrapper.le("update_time", endTime);
-            List<Finance> financeList = financeService.list(financeWrapper);
-            //计算从免申请金额开始时间以来到结束的所有的申请记录是否超过了免申请金额，
-            double total = 0;
-            for (Finance finance : financeList) {
-                total = total + finance.getMoney();
-            }
-            Finance finance = new Finance();
-            finance.setId(IdUtils.getUUID());
-            finance.setClubId(club.getId());
-            finance.setPurpose(addFinanceVo.getPurpose());
-            finance.setMoney(addFinanceVo.getMoney());
-//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            finance.setUpdateTime(new Date());
-            //如果没有超过免申请金额
-            if (total < club.getMoney()) {
-                //判断加上当前申请的金额是否超过
-                if ((total + addFinanceVo.getMoney()) < club.getMoney()) {
-                    //如果没有超过,当前记录不需要审核，直接设置状态为通过，否申请
-                    finance.setStatus(1);
-                    finance.setIsApp(0);
+            //判断当前是否在免申请周期之内
+            if (now.after(financeStartTime)&& now.before(endTime)){
+                //判断当前社团从申请周期开始之后的所有的金额是否超过了免申请金额
+                QueryWrapper<Finance> financeWrapper = new QueryWrapper<>();
+                financeWrapper.eq("club_id", club.getId());
+                financeWrapper.ge("update_time", financeStartTime);
+                financeWrapper.le("update_time", endTime);
+                List<Finance> financeList = financeService.list(financeWrapper);
+                //计算从免申请金额开始时间以来到结束的所有的申请记录是否超过了免申请金额，
+                double total = 0;
+                for (Finance finance : financeList) {
+                    total = total + finance.getMoney();
+                }
+                Finance finance = new Finance();
+                finance.setId(IdUtils.getUUID());
+                finance.setClubId(club.getId());
+                finance.setPurpose(addFinanceVo.getPurpose());
+                finance.setMoney(addFinanceVo.getMoney());
+    //        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                finance.setUpdateTime(now);
+                //如果没有超过免申请金额
+                if (total < club.getMoney()) {
+                    //判断加上当前申请的金额是否超过
+                    if ((total + addFinanceVo.getMoney()) < club.getMoney()) {
+                        //如果没有超过,当前记录不需要审核，直接设置状态为通过，否申请
+                        finance.setStatus(1);
+                        finance.setIsApp(0);
+                    } else {
+                        //如果超过,设状态为待审核，是申请
+                        finance.setStatus(2);
+                        finance.setIsApp(1);
+                    }
                 } else {
-                    //如果超过,设状态为待审核，是申请
+                    //如果超过了
                     finance.setStatus(2);
                     finance.setIsApp(1);
                 }
-            } else {
-                //如果超过了
+                //将记录添加到finance表中
+                boolean flag = financeService.save(finance);
+                if (flag) {
+                    rs.setCode(200);
+                    rs.setMsg("ok");
+                }
+
+            }else{
+//                如果不在
+                Finance finance = new Finance();
+                finance.setId(IdUtils.getUUID());
+                finance.setClubId(club.getId());
+                finance.setPurpose(addFinanceVo.getPurpose());
+                finance.setMoney(addFinanceVo.getMoney());
+                finance.setUpdateTime(now);
                 finance.setStatus(2);
                 finance.setIsApp(1);
+                boolean flag = financeService.save(finance);
+                if (flag) {
+                    rs.setCode(200);
+                    rs.setMsg("ok");
+                }
             }
-            //将记录添加到finance表中
-            boolean flag = financeService.save(finance);
-            if (flag){
-                rs.setCode(200);
-                rs.setMsg("ok");
-            }
-        }else {
+
+
+        } else {
             rs.setCode(503);
             rs.setMsg("请检查当前身份是否为社长，或联系管理员查询有无免申请金额");
         }
@@ -151,23 +174,24 @@ public class FinanceController {
 
     /**
      * 社长查看本社团所有的经费记录
+     *
      * @param no
      * @return
      */
     @GetMapping("/proprieterGetFinanceList")
-    public Result proprieterGetFinanceList(@RequestParam String no,@RequestParam("current") Integer current, @RequestParam("size") Integer size) {
+    public Result proprieterGetFinanceList(@RequestParam String no, @RequestParam("current") Integer current, @RequestParam("size") Integer size) {
         Result rs = new Result<>(500, "error");
 
         QueryWrapper<Club> clubWrapper = new QueryWrapper<>();
-        clubWrapper.eq("proprieter_id",no);
+        clubWrapper.eq("proprieter_id", no);
         Club club = clubService.getOne(clubWrapper);
 
         QueryWrapper<Finance> financeWrapper = new QueryWrapper<>();
-        financeWrapper.eq("club_id",club.getId());
-        financeWrapper.orderByAsc("status","update_time");
-        Page<Finance> page = new Page<>(current,size);
+        financeWrapper.eq("club_id", club.getId());
+        financeWrapper.orderByDesc("status", "update_time");
+        Page<Finance> page = new Page<>(current, size);
         Page<Finance> financePage = financeService.page(page, financeWrapper);
-        if (financePage.getSize() >= 0){
+        if (financePage.getSize() >= 0) {
             rs.setData(financePage);
             rs.setCode(200);
             rs.setMsg("ok");
@@ -177,7 +201,7 @@ public class FinanceController {
     }
 
     @PutMapping("/changeFinanceStatus")
-    public Result changeFinanceStatus(@RequestBody Finance finance){
+    public Result changeFinanceStatus(@RequestBody Finance finance) {
         Result rs = new Result<>(500, "error");
         boolean flag = financeService.updateById(finance);
         if (flag) {

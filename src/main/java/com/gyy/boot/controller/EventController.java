@@ -193,7 +193,7 @@ public class EventController {
         QueryWrapper<Club> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("proprieter_id", stuNo);
         Club club = clubService.getOne(queryWrapper);
-        //检查社团的id与活动的ia是否在club——event表中，即当前社团是否已经加入了活动
+        //检查社团的id与活动的id是否在club——event表中，即当前社团是否已经加入了活动
         QueryWrapper<ClubEvent> wrapper = new QueryWrapper<>();
         wrapper.eq("club_id", club.getId());
         wrapper.eq("event_id", eventId);

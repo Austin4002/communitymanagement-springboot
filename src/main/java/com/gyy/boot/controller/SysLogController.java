@@ -1,5 +1,6 @@
 package com.gyy.boot.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gyy.boot.bean.SysLog;
 import com.gyy.boot.service.SysLogService;
@@ -18,7 +19,9 @@ public class SysLogController {
     public Result getLogList(@RequestParam("current") Integer current, @RequestParam("size") Integer size){
         Result rs = new Result<>(500, "error");
         Page<SysLog> page = new Page<>(current,size);
-        Page<SysLog> logPage = sysLogService.page(page);
+        QueryWrapper<SysLog> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("time");
+        Page<SysLog> logPage = sysLogService.page(page,wrapper);
         if (logPage.getSize() >= 0){
             rs.setCode(200);
             rs.setMsg("ok");

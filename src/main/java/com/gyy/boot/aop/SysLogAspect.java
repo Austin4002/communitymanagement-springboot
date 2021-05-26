@@ -12,6 +12,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -46,7 +47,9 @@ public class SysLogAspect {
         String methodName = joinPoint.getSignature().getName();
 //        sysLog.setMethod(method);
 
-        sysLog.setTime(new Date());
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sysLog.setTime(date);
 
         Map<String, String[]> parameterMap = request.getParameterMap();
         String mapStr = JSONObject.toJSONString(parameterMap);

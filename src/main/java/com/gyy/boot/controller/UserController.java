@@ -98,6 +98,7 @@ public class UserController {
     @GetMapping("/user/{no}")
     public Result<UserInformation> getUserById(@PathVariable("no") String no) {
         Result<UserInformation> rs = new Result<>(500, "error");
+
         UserInformation userInformation = new UserInformation();
         //根据学号查询用户
         User user = userService.getById(no);

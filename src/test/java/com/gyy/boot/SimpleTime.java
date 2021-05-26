@@ -49,4 +49,12 @@ public class SimpleTime {
         num = num*100;
         System.out.println(num);
     }
+
+    @Test
+    public void test4(){
+        Date date = new Date();
+        long time = date.getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(time);
+    }
 }
